@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Mental Compass</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-soft: #0b1020;
+      --panel: #111827;
+      --panel-soft: #0f172a;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56,189,248,0.2);
+      --danger: #f97373;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border-subtle: rgba(148,163,184,0.4);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow-soft: 0 22px 45px rgba(15,23,42,0.8);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(56,189,248,0.08), transparent 55%),
+        radial-gradient(circle at bottom, rgba(249,115,22,0.06), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Layout */
+    .app-shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.12), transparent 60%),
+                  radial-gradient(circle at bottom right, rgba(248,250,252,0.02), transparent 55%),
+                  linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,0.98));
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148,163,184,0.45);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+    }
+    .card h2, .card h3 {
+      margin-top: 0;
+    }
+    .flex {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      color: var(--muted);
+    }
+
+    /* Auth gate */
+    #authGate {
+      max-width: 420px;
+      margin: 56px auto;
+    }
+    .input {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(15,23,42,0.96);
+      color: var(--text);
+      font-size: 14px;
+    }
+    .input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+    }
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: linear-gradient(135deg, #0f172a, #020617);
+      color: var(--text);
+      font-size: 13px;
+      padding: 7px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+    .btn.primary {
+      border-color: rgba(56,189,248,0.9);
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.22), transparent 55%), #0b1120;
+      color: #e0f2fe;
+    }
+    .btn.danger {
+      border-color: rgba(248,113,113,0.85);
+      background: radial-gradient(circle at top left, rgba(248,113,113,0.15), transparent 55%), #111827;
+      color: #fee2e2;
+    }
+    .btn.small {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .btn:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 15px 35px rgba(15,23,42,0.9);
+      border-color: rgba(148,163,184,0.9);
+    }
+    .btn.primary:not(:disabled):hover {
+      border-color: rgba(56,189,248,1);
+    }
+
+    .error {
+      color: var(--danger);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Nav */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .nav-title {
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.8);
+      color: #e0f2fe;
+      background: rgba(15,23,42,0.95);
+    }
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .nav-tab {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      padding: 5px 11px;
+      font-size: 12px;
+      background: rgba(15,23,42,0.85);
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-tab.active {
+      border-color: rgba(56,189,248,0.9);
+      color: #e0f2fe;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.2), transparent 55%), #020617;
+    }
+    .nav-tab span.key {
+      font-size: 10px;
+      opacity: 0.7;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 64px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 800px) {
+      .two-col {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    /* Lists, labels, etc. */
+    label {
+      font-size: 13px;
+      color: var(--text);
+    }
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .link {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .link:hover {
+      text-decoration: underline;
+    }
+    ul {
+      margin: 6px 0 6px 16px;
+      padding: 0;
+    }
+
+    /* Details styling */
+    details {
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.9);
+      padding: 8px 10px;
+      margin-bottom: 8px;
+    }
+    summary {
+      cursor: pointer;
+      outline: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    .summary-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .summary-toggle {
+      font-size: 16px;
+      opacity: 0.8;
+    }
+
+    /* Spectrum bars + radar */
+    .spectrum-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(30,64,175,0.6);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .spectrum-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #a855f7);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .stat-card {
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148,163,184,0.5);
+      padding: 8px 10px;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.12), transparent 55%), rgba(15,23,42,0.92);
+      font-size: 12px;
+    }
+    .stat-label {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+    .stat-value {
+      font-size: 14px;
+    }
+    .radar-wrap {
+      margin-top: 8px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 8px;
+      background: radial-gradient(circle at top, rgba(56,189,248,0.08), transparent 55%), rgba(15,23,42,0.98);
+    }
+    .radar-labels {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Journal */
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.96);
+      color: var(--text);
+      font-size: 13px;
+      padding: 9px 10px;
+      resize: vertical;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+    }
+    .journal-entry {
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.45);
+      padding: 8px 9px;
+      background: rgba(15,23,42,0.95);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    .journal-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .journal-text {
+      white-space: pre-wrap;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    /* Footer Spotify helper */
+    .footer-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 8px 10px;
+      background: linear-gradient(to right, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
+      border-top: 1px solid rgba(15,23,42,0.9);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--muted);
+      z-index: 20;
+    }
+    .footer-bar input {
+      min-width: 120px;
+    }
+
+    /* Badges for grounded status */
+    .grounded-ok {
+      border-color: rgba(34,197,94,0.8) !important;
+      color: #bbf7d0 !important;
+    }
+    .grounded-warn {
+      border-color: rgba(234,179,8,0.9) !important;
+      color: #fef9c3 !important;
+    }
+    .grounded-bad {
+      border-color: rgba(248,113,113,0.9) !important;
+      color: #fee2e2 !important;
+    }
+
+    .label-small {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Timer display */
+    #timerDisplay {
+      margin-top: 6px;
+    }
+
+    /* Crisis box */
+    .crisis-card {
+      border-color: rgba(248,113,113,0.6) !important;
+      background: radial-gradient(circle at top left, rgba(248,113,113,0.18), transparent 55%), rgba(15,23,42,0.97) !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Simple passcode gate -->
+  <div id="authGate">
+    <div class="card">
+      <h2 style="margin-bottom:4px;">The Mental Compass</h2>
+      <div class="muted" style="margin-bottom:10px;">
+        Light-weight privacy lock for shared devices. Your data never leaves this browser.
+      </div>
+      <div id="authInit" style="display:none;">
+        <p class="muted">Set a 4–12 character passcode. This is only stored on your device.</p>
+        <input id="newPasscode" class="input" type="password" placeholder="Create a passcode" />
+        <div class="row" style="margin-top:8px;">
+          <button class="btn primary" onclick="setInitialPasscode()">Set &amp; Enter</button>
+        </div>
+        <div id="authInitError" class="error" style="display:none;"></div>
+      </div>
+      <div id="authLogin" style="display:none;">
+        <p class="muted">Enter your passcode to unlock your Compass.</p>
+        <input id="loginPasscode" class="input" type="password" placeholder="Enter passcode" />
+        <div class="row" style="margin-top:8px;">
+          <button class="btn primary" onclick="unlock()">Unlock</button>
+        </div>
+        <div id="authLoginError" class="error" style="display:none;"></div>
+      </div>
+      <div class="hint">
+        This is not strong security, just a boundary in case others use your device.
+      </div>
+    </div>
+  </div>
+
+  <div id="app" style="display:none;">
+    <div class="app-shell">
+      <header class="card" style="padding-bottom:10px;">
+        <div class="nav-bar">
+          <div class="nav-title">
+            🧭 The Mental Compass
+            <span class="badge">local only</span>
+          </div>
+        </div>
+        <div class="muted" style="font-size:12px;margin-top:4px;">
+          Alt+1…6 to switch tabs · Different brains, same worth · This is a reflection tool, not medical advice.
+        </div>
+        <nav class="nav-tabs" style="margin-top:10px;">
+          <button class="nav-tab active" data-page="home" onclick="showPage('home')">
+            Home <span class="key">Alt+1</span>
+          </button>
+          <button class="nav-tab" data-page="spectrum" onclick="showPage('spectrum')">
+            NeuroSpectrum <span class="key">Alt+2</span>
+          </button>
+          <button class="nav-tab" data-page="journal" onclick="showPage('journal')">
+            Journal <span class="key">Alt+3</span>
+          </button>
+          <button class="nav-tab" data-page="trains" onclick="showPage('trains')">
+            Chasing Trains <span class="key">Alt+4</span>
+          </button>
+          <button class="nav-tab" data-page="connections" onclick="showPage('connections')">
+            Connections <span class="key">Alt+5</span>
+          </button>
+          <button class="nav-tab" data-page="settings" onclick="showPage('settings')">
+            Settings <span class="key">Alt+6</span>
+          </button>
+        </nav>
+      </header>
+
+      <main>
+        <!-- HOME -->
+        <section id="page-home">
+          <div class="two-col">
+            <div class="card">
+              <div class="section-title">How this works</div>
+              <div class="section-subtitle">
+                A grounded reflection space for all brain types — neurotypical and neurodivergent — across one full spectrum.
+              </div>
+              <p class="muted">
+                This site helps you:
+              </p>
+              <ul>
+                <li>Notice your stress and grounding levels over time.</li>
+                <li>Understand how your brain tends to process the world.</li>
+                <li>Switch from negative spirals to gentler, upward ones.</li>
+                <li>Optionally find others whose brains feel similar to yours.</li>
+              </ul>
+              <p class="muted">
+                It does <strong>not</strong> diagnose you, and it does not replace therapy or medical care. It gives you language, structure, and tools.
+              </p>
+              <div class="row" style="margin-top:6px;">
+                <span class="pill">🧠 Different wiring ≠ broken</span>
+                <span class="pill">🌡️ Grounding comes first</span>
+                <span class="pill">🪜 Small steps, not instant awakening</span>
+              </div>
+            </div>
+            <div class="card crisis-card">
+              <h3 style="margin-top:0;">🆘 If you're in crisis</h3>
+              <p class="muted">
+                This tool can’t help with immediate emergencies.
+                If you’re feeling like you might hurt yourself or someone else, please reach out:
+              </p>
+              <ul>
+                <li><strong>US:</strong> 988 Suicide &amp; Crisis Lifeline (call or text)</li>
+                <li><strong>US chat:</strong> <a class="link" href="https://988lifeline.org/chat/" target="_blank">988 Chat</a></li>
+                <li><strong>International:</strong> <a class="link" href="https://findahelpline.com/" target="_blank">Find a Helpline</a></li>
+              </ul>
+              <p class="muted">
+                Needing help doesn’t mean you’ve failed. It means your nervous system is asking for backup.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- NEUROSPECTRUM -->
+        <section id="page-spectrum" style="display:none;">
+          <div class="two-col">
+            <div class="card">
+              <div class="section-title">NeuroSpectrum snapshot</div>
+              <div class="section-subtitle">
+                This is not a diagnosis — it’s a gentle way to describe how your brain tends to operate along a spectrum.
+              </div>
+
+              <details open>
+                <summary>
+                  <span class="summary-label">
+                    <span class="summary-toggle">−</span>
+                    Thinking style
+                  </span>
+                  <span class="label-small">Pattern vs linear</span>
+                </summary>
+                <div style="margin-top:6px;">
+                  <label><input type="checkbox" data-dimension="thinking" data-dir="pattern" /> I often jump to the “big picture” or end of a thought without explaining the steps.</label><br/>
+                  <label><input type="checkbox" data-dimension="thinking" data-dir="pattern" /> I notice patterns, coincidences, or connections other people miss.</label><br/>
+                  <label><input type="checkbox" data-dimension="thinking" data-dir="linear" /> I prefer clear, step-by-step instructions and feel calmer when things are structured.</label><br/>
+                  <label><input type="checkbox" data-dimension="thinking" data-dir="linear" /> I get frustrated when conversations or tasks jump around too much.</label>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span class="summary-label">
+                    <span class="summary-toggle">+</span>
+                    Sensory intensity
+                  </span>
+                  <span class="label-small">How loud the world feels</span>
+                </summary>
+                <div style="margin-top:6px;">
+                  <label><input type="checkbox" data-dimension="sensory" data-dir="high" /> Crowded or noisy places drain me very quickly.</label><br/>
+                  <label><input type="checkbox" data-dimension="sensory" data-dir="high" /> I notice small sounds, textures, or visual details other people ignore.</label><br/>
+                  <label><input type="checkbox" data-dimension="sensory" data-dir="low" /> I don’t usually notice sensory stuff unless it’s extreme.</label><br/>
+                  <label><input type="checkbox" data-dimension="sensory" data-dir="low" /> I can tune out background noise pretty easily.</label>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span class="summary-label">
+                    <span class="summary-toggle">+</span>
+                    Emotional intensity
+                  </span>
+                  <span class="label-small">How strongly you feel</span>
+                </summary>
+                <div style="margin-top:6px;">
+                  <label><input type="checkbox" data-dimension="emotion" data-dir="high" /> When I feel something, I feel it a lot — even if I hide it.</label><br/>
+                  <label><input type="checkbox" data-dimension="emotion" data-dir="high" /> It takes time to come back down after an argument or emotional event.</label><br/>
+                  <label><input type="checkbox" data-dimension="emotion" data-dir="low" /> My emotions usually feel muted or distant.</label><br/>
+                  <label><input type="checkbox" data-dimension="emotion" data-dir="low" /> I often think about what I “should” feel more than what I actually feel.</label>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span class="summary-label">
+                    <span class="summary-toggle">+</span>
+                    Novelty &amp; curiosity drive
+                  </span>
+                  <span class="label-small">How much “new” pulls you</span>
+                </summary>
+                <div style="margin-top:6px;">
+                  <label><input type="checkbox" data-dimension="novelty" data-dir="high" /> When something captures my interest, I can lose hours in it.</label><br/>
+                  <label><input type="checkbox" data-dimension="novelty" data-dir="high" /> Routine tasks feel painfully hard unless I make them interesting.</label><br/>
+                  <label><input type="checkbox" data-dimension="novelty" data-dir="low" /> I’m mostly comfortable with predictable, familiar things.</label><br/>
+                  <label><input type="checkbox" data-dimension="novelty" data-dir="low" /> I don’t usually chase new interests intensely.</label>
+                </div>
+              </details>
+
+              <div class="row" style="margin-top:10px;">
+                <button class="btn primary" onclick="calculateSpectrum()">Update snapshot</button>
+              </div>
+              <div class="hint">
+                You can change these any time. Your brain is not a fixed label — this just describes tendencies right now.
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 style="margin-top:0;">Your current snapshot</h3>
+              <div id="spectrumSummary" class="muted" style="font-size:13px;margin-bottom:8px;">
+                Make some selections on the left and click “Update snapshot” to see how your brain currently leans.
+              </div>
+
+              <div style="font-size:12px;">
+                <div style="margin-bottom:8px;">
+                  <div class="stat-label">Thinking</div>
+                  <div class="flex-between">
+                    <span class="muted">Linear</span>
+                    <span id="thinkingLabel" style="font-size:12px;">—</span>
+                    <span class="muted">Pattern-based</span>
+                  </div>
+                  <div class="spectrum-bar"><div id="thinkingBar" class="spectrum-bar-inner"></div></div>
+                </div>
+
+                <div style="margin-bottom:8px;">
+                  <div class="stat-label">Sensory</div>
+                  <div class="flex-between">
+                    <span class="muted">Low intensity</span>
+                    <span id="sensoryLabel" style="font-size:12px;">—</span>
+                    <span class="muted">High intensity</span>
+                  </div>
+                  <div class="spectrum-bar"><div id="sensoryBar" class="spectrum-bar-inner"></div></div>
+                </div>
+
+                <div style="margin-bottom:8px;">
+                  <div class="stat-label">Emotional</div>
+                  <div class="flex-between">
+                    <span class="muted">Muted</span>
+                    <span id="emotionLabel" style="font-size:12px;">—</span>
+                    <span class="muted">Intense</span>
+                  </div>
+                  <div class="spectrum-bar"><div id="emotionBar" class="spectrum-bar-inner"></div></div>
+                </div>
+
+                <div style="margin-bottom:8px;">
+                  <div class="stat-label">Novelty</div>
+                  <div class="flex-between">
+                    <span class="muted">Predictable</span>
+                    <span id="noveltyLabel" style="font-size:12px;">—</span>
+                    <span class="muted">Curiosity-driven</span>
+                  </div>
+                  <div class="spectrum-bar"><div id="noveltyBar" class="spectrum-bar-inner"></div></div>
+                </div>
+              </div>
+
+              <div class="radar-wrap">
+                <div class="stat-label">Brain “fingerprint”</div>
+                <svg id="radarSvg" viewBox="0 0 200 200" style="width:100%;max-width:260px;display:block;margin:4px auto;">
+                  <!-- grid + polygon drawn in JS -->
+                </svg>
+                <div class="radar-labels">
+                  <span>🧩 Thinking</span>
+                  <span>🎧 Sensory</span>
+                  <span>💓 Emotional</span>
+                  <span>✨ Novelty</span>
+                </div>
+              </div>
+
+              <div class="hint" style="margin-top:8px;">
+                There is no “normal” here. Neurotypicals and neurodivergents all live on the same spectrum — just with different shapes.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- JOURNAL -->
+        <section id="page-journal" style="display:none;">
+          <div class="two-col">
+            <div class="card">
+              <div class="section-title">Grounding journal</div>
+              <div class="section-subtitle">
+                Use this to track your stress, grounding, and thoughts over time. This stays on your device.
+              </div>
+
+              <label class="muted">What’s on your mind right now?</label>
+              <textarea id="journalText" placeholder="Write like nobody is judging you. This is just for you."></textarea>
+
+              <div style="margin-top:8px;">
+                <label class="muted">Stress level (0–10)</label>
+                <input id="journalStress" type="range" min="0" max="10" value="4" />
+                <div class="flex-between">
+                  <span class="label-small">0 = calm</span>
+                  <span class="label-small" id="journalStressLabel">4</span>
+                  <span class="label-small">10 = overwhelmed</span>
+                </div>
+              </div>
+
+              <div style="margin-top:8px;">
+                <label class="muted">Grounding state right now</label><br/>
+                <select id="journalGrounded" class="input" style="border-radius:12px;">
+                  <option value="grounded">Grounded enough</option>
+                  <option value="ungrounded">A bit unsteady</option>
+                  <option value="shutdown">Shutdown / numb</option>
+                </select>
+              </div>
+
+              <div class="row" style="margin-top:6px;">
+                <label class="label-small"><input type="checkbox" id="journalSelfGround" /> I feel like a reliable ground for myself right now.</label>
+                <label class="label-small"><input type="checkbox" id="journalRealityCheck" /> I did a reality check outside my own head.</label>
+              </div>
+
+              <div class="row" style="margin-top:10px;">
+                <button class="btn primary" onclick="saveJournalEntry()">Save entry</button>
+                <button class="btn" onclick="exportJournal()">Export journal (.txt)</button>
+              </div>
+              <div class="hint">
+                Entries are stored locally in this browser (localStorage). Clearing browser data will erase them.
+              </div>
+              <div id="journalDraftHint" class="hint" style="display:none;color:#facc15;">
+                Draft restored. Don’t forget to save if this matters to you.
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 style="margin-top:0;">Patterns &amp; history</h3>
+              <div id="journalPatterns" class="muted" style="font-size:13px;margin-bottom:6px;">
+                Once you have a few entries, I’ll summarize gentle patterns here.
+              </div>
+              <div id="journalList"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CHASING TRAINS -->
+        <section id="page-trains" style="display:none;">
+          <div class="two-col">
+            <div class="card">
+              <div class="section-title">Chasing trains (safely)</div>
+              <div class="section-subtitle">
+                “Chasing trains” = intentionally following a train of thought deeper — with guard rails.
+              </div>
+
+              <p class="muted">
+                Before you dive:
+              </p>
+              <ul>
+                <li>Check your stress level.</li>
+                <li>Ground in your body at least once.</li>
+                <li>Know who/what your anchors are if things get too loud.</li>
+              </ul>
+
+              <label class="muted">Starting thought / train:</label>
+              <textarea id="trainTopic" placeholder="Example: &quot;Why do I shut down when people raise their voice?&quot;"></textarea>
+
+              <div style="margin-top:8px;">
+                <label class="muted">Quick grounding checklist</label>
+                <div class="row">
+                  <label class="label-small"><input type="checkbox" id="trainGroundBody" /> I noticed my body (breath, feet, or touch).</label>
+                  <label class="label-small"><input type="checkbox" id="trainGroundEnvironment" /> I looked around and named a few things I see.</label>
+                  <label class="label-small"><input type="checkbox" id="trainGroundAnchor" /> I reminded myself who/what my anchors are.</label>
+                </div>
+              </div>
+
+              <div style="margin-top:8px;">
+                <label class="muted">Optional: choose a session length</label>
+                <div class="row">
+                  <button class="btn small" data-timer="10" onclick="startTimer(10)">10 min</button>
+                  <button class="btn small" data-timer="15" onclick="startTimer(15)">15 min</button>
+                  <button class="btn small" data-timer="20" onclick="startTimer(20)">20 min</button>
+                  <button class="btn small" data-timer="30" onclick="startTimer(30)">30 min</button>
+                </div>
+                <div id="timerDisplay" style="display:none;">
+                  <div class="stat-card" style="margin-top:6px;">
+                    <div class="stat-label">Session timer</div>
+                    <div class="flex-between">
+                      <div class="stat-value" id="timerValue">00:00</div>
+                      <button class="btn danger small" id="stopTimerBtn" onclick="stopTimer()">Stop early</button>
+                    </div>
+                    <div class="hint">
+                      When the timer ends, pause, check your body and your reality, then decide whether to keep going.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p class="muted" style="margin-top:10px;">
+                Signs you’ve followed a train too far <em>for this moment</em>:
+              </p>
+              <ul>
+                <li>You feel floaty, unreal, or detached from your body.</li>
+                <li>Your thoughts feel “too fast to catch.”</li>
+                <li>You feel panicky or like everything suddenly “means too much.”</li>
+              </ul>
+              <p class="muted">
+                If that happens: stop, ground, drink water, text/call an anchor, or come back to the Journal page.
+              </p>
+            </div>
+
+            <div class="card">
+              <h3 style="margin-top:0;">Anchors &amp; reality</h3>
+              <p class="muted">
+                Anchors are people, places, sensations, or routines that help you remember what’s real when your mind is deep in trains.
+              </p>
+              <div class="stat-card" style="margin-bottom:6px;">
+                <div class="stat-label">Saved anchors</div>
+                <div id="anchorsList" class="stat-value muted">You haven’t added anchors yet. Check Settings → Anchors.</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Reality check prompts</div>
+                <ul style="margin-top:2px;">
+                  <li>Did anything in my outer world actually change in the last 10 minutes?</li>
+                  <li>Is there someone I trust I could ask, “Does this sound real or like my brain spinning?”</li>
+                  <li>What would I tell a friend if they were thinking what I am right now?</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONNECTIONS -->
+        <section id="page-connections" style="display:none;">
+          <div class="two-col">
+            <div class="card">
+              <div class="section-title">Finding others like your brain</div>
+              <div class="section-subtitle">
+                The neurodivergent community is often lonely — not because people are wrong, but because their wiring is rare in their local bubble.
+              </div>
+              <p class="muted">
+                This page gives you tools to <strong>choose</strong> connection in a safer way:
+              </p>
+              <ul>
+                <li>You stay anonymous until you decide otherwise.</li>
+                <li>It’s about brain fit, not forced relationships.</li>
+                <li>You’re always allowed to change your mind.</li>
+              </ul>
+              <p class="muted">
+                Right now there is no automatic matching — that would require servers and data-sharing this site intentionally avoids.
+                Instead, I help you generate handles and intros you can use on platforms like Discord, Reddit, etc.
+              </p>
+            </div>
+
+            <div class="card">
+              <h3 style="margin-top:0;">Anonymous handle &amp; intro</h3>
+              <p class="muted">
+                Generate a “throwaway” style handle idea and a short intro you can tweak. Then you can go create this handle yourself on Discord (or elsewhere).
+              </p>
+              <div class="row" style="margin-bottom:6px;">
+                <button class="btn primary" onclick="generateHandle()">Generate dummy handle</button>
+              </div>
+              <div class="stat-card" id="handleBlock" style="display:none;">
+                <div class="stat-label">Handle idea</div>
+                <div class="stat-value" id="dummyHandle" style="font-family:monospace;"></div>
+              </div>
+              <div class="stat-card" id="introBlock" style="margin-top:6px;display:none;">
+                <div class="stat-label">Suggested intro text</div>
+                <div class="stat-value" id="introTemplate" style="white-space:pre-wrap;font-size:12px;"></div>
+              </div>
+              <div class="hint" style="margin-top:6px;">
+                You decide:
+                <br/>• when to share more personal info<br/>
+                • when to disclose anything about your life<br/>
+                • when to end conversations that feel off
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="page-settings" style="display:none;">
+          <div class="two-col">
+            <div class="card">
+              <div class="section-title">Settings &amp; anchors</div>
+              <div class="section-subtitle">
+                Adjust privacy and save things that help you stay grounded.
+              </div>
+
+              <h3 style="margin-top:6px;">Passcode</h3>
+              <p class="muted">
+                Change your local passcode. This only protects the app from casual access on this device.
+              </p>
+              <input id="settingsPasscode" class="input" type="password" placeholder="New passcode" />
+              <div class="row" style="margin-top:6px;">
+                <button class="btn" onclick="changePasscode()">Update passcode</button>
+              </div>
+              <div id="settingsPasscodeMsg" class="hint"></div>
+
+              <h3>Anchors</h3>
+              <p class="muted">
+                List the people, places, songs, sensations, or routines that help you feel real and safe. These show up on the Chasing Trains page.
+              </p>
+              <textarea id="anchorsText" placeholder="- Victoria (text)\n- My kids’ voices\n- Cold water on my hands\n- A specific song\n- Stepping outside and feeling the air"></textarea>
+              <div class="row" style="margin-top:6px;">
+                <button class="btn" onclick="saveAnchors()">Save anchors</button>
+              </div>
+              <div id="anchorsMsg" class="hint"></div>
+            </div>
+
+            <div class="card">
+              <h3 style="margin-top:0;">Data &amp; safety</h3>
+              <p class="muted">
+                Everything you enter is stored only in this browser’s <code>localStorage</code>. There is no cloud, no server, and no syncing.
+              </p>
+              <ul>
+                <li>Clearing your browser storage will erase this data.</li>
+                <li>Anyone with your passcode + physical access to your device could view it.</li>
+              </ul>
+              <div class="row" style="margin-top:8px;">
+                <button class="btn danger" onclick="clearAllData()">Clear all data</button>
+              </div>
+              <div class="hint" id="clearMsg"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Footer Spotify helper -->
+  <div class="footer-bar">
+    <span>🎧 Grounding helper:</span>
+    <span class="label-small">Lo-fi version of</span>
+    <input id="spotifySong" class="input" style="max-width:220px;" placeholder="Type a song name" />
+    <button class="btn small" onclick="openSpotify()">Open in Spotify</button>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'mentalCompass_v1';
+
+    let state = {
+      passcodeSet: false,
+      passcode: null,
+      journal: [],
+      spectrum: {
+        thinkingScore: 0,
+        sensoryScore: 0,
+        emotionScore: 0,
+        noveltyScore: 0
+      },
+      anchors: '',
+      connections: {
+        dummyHandle: null,
+        introTemplate: null
+      },
+      drafts: {
+        journalText: '',
+        trainTopic: ''
+      }
+    };
+
+    let authenticated = false;
+    let journalDirty = false;
+    let timerInterval = null;
+    let timerRemaining = 0;
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          state = Object.assign(state, parsed);
+        } catch (e) {
+          console.warn('Failed to parse state, using defaults');
+        }
+      }
+    }
+
+    function initAuth() {
+      loadState();
+      const authInit = document.getElementById('authInit');
+      const authLogin = document.getElementById('authLogin');
+      if (!state.passcode) {
+        state.passcodeSet = false;
+        authInit.style.display = 'block';
+        authLogin.style.display = 'none';
+      } else {
+        state.passcodeSet = true;
+        authInit.style.display = 'none';
+        authLogin.style.display = 'block';
+      }
+    }
+
+    function setInitialPasscode() {
+      const el = document.getElementById('newPasscode');
+      const error = document.getElementById('authInitError');
+      const val = el.value.trim();
+      if (val.length < 4 || val.length > 32) {
+        error.textContent = 'Use 4–32 characters.';
+        error.style.display = 'block';
+        return;
+      }
+      error.style.display = 'none';
+      state.passcode = val;
+      state.passcodeSet = true;
+      saveState();
+      authenticated = true;
+      showApp();
+    }
+
+    function unlock() {
+      const el = document.getElementById('loginPasscode');
+      const error = document.getElementById('authLoginError');
+      const val = el.value.trim();
+      if (val !== state.passcode) {
+        error.textContent = 'Incorrect passcode.';
+        error.style.display = 'block';
+        return;
+      }
+      error.style.display = 'none';
+      authenticated = true;
+      showApp();
+    }
+
+    function showApp() {
+      document.getElementById('authGate').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      renderAll();
+    }
+
+    function showPage(page) {
+      if (journalDirty && page !== 'journal') {
+        const ok = confirm('You have unsaved journal text. Switch pages anyway?');
+        if (!ok) return;
+      }
+      const sections = ['home','spectrum','journal','trains','connections','settings'];
+      sections.forEach(id => {
+        document.getElementById('page-' + id).style.display = (id === page) ? 'block' : 'none';
+        const tab = document.querySelector('.nav-tab[data-page="'+id+'"]');
+        if (tab) tab.classList.toggle('active', id === page);
+      });
+      if (page === 'trains') {
+        updateAnchorsDisplay();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (!authenticated) return;
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (!e.altKey) return;
+      const map = {
+        '1': 'home',
+        '2': 'spectrum',
+        '3': 'journal',
+        '4': 'trains',
+        '5': 'connections',
+        '6': 'settings'
+      };
+      const page = map[e.key];
+      if (page) {
+        e.preventDefault();
+        showPage(page);
+      }
+    });
+
+    /* Spectrum calculation */
+    function calculateSpectrum() {
+      const checks = document.querySelectorAll('input[type="checkbox"][data-dimension]');
+      let tPattern=0, tLinear=0, sHigh=0, sLow=0, eHigh=0, eLow=0, nHigh=0, nLow=0;
+      checks.forEach(ch => {
+        if (!ch.checked) return;
+        const dim = ch.getAttribute('data-dimension');
+        const dir = ch.getAttribute('data-dir');
+        if (dim === 'thinking') {
+          if (dir === 'pattern') tPattern++;
+          else tLinear++;
+        } else if (dim === 'sensory') {
+          if (dir === 'high') sHigh++;
+          else sLow++;
+        } else if (dim === 'emotion') {
+          if (dir === 'high') eHigh++;
+          else eLow++;
+        } else if (dim === 'novelty') {
+          if (dir === 'high') nHigh++;
+          else nLow++;
+        }
+      });
+      const thinkingScore = tPattern - tLinear;  // -2..2
+      const sensoryScore  = sHigh - sLow;
+      const emotionScore  = eHigh - eLow;
+      const noveltyScore  = nHigh - nLow;
+      state.spectrum = { thinkingScore, sensoryScore, emotionScore, noveltyScore };
+      saveState();
+      renderSpectrum();
+    }
+
+    function describeAxis(score, lowWord, highWord) {
+      if (score > 1) return 'Strongly ' + highWord;
+      if (score === 1) return 'Leaning ' + highWord;
+      if (score === 0) return 'Balanced / mixed';
+      if (score === -1) return 'Leaning ' + lowWord;
+      return 'Strongly ' + lowWord;
+    }
+
+    function renderSpectrum() {
+      const { thinkingScore, sensoryScore, emotionScore, noveltyScore } = state.spectrum;
+      const thinkingLabel = document.getElementById('thinkingLabel');
+      const sensoryLabel  = document.getElementById('sensoryLabel');
+      const emotionLabel  = document.getElementById('emotionLabel');
+      const noveltyLabel  = document.getElementById('noveltyLabel');
+
+      const tText = describeAxis(thinkingScore, 'linear', 'pattern-based');
+      const sText = describeAxis(sensoryScore, 'low intensity', 'high intensity');
+      const eText = describeAxis(emotionScore, 'muted', 'intense');
+      const nText = describeAxis(noveltyScore, 'predictable', 'curiosity-driven');
+
+      thinkingLabel.textContent = tText;
+      sensoryLabel.textContent  = sText;
+      emotionLabel.textContent  = eText;
+      noveltyLabel.textContent  = nText;
+
+      function mapScore(score) {
+        // -2..2 -> 0..100
+        return ((score + 2) / 4) * 100;
+      }
+      document.getElementById('thinkingBar').style.width = mapScore(thinkingScore) + '%';
+      document.getElementById('sensoryBar').style.width  = mapScore(sensoryScore) + '%';
+      document.getElementById('emotionBar').style.width  = mapScore(emotionScore) + '%';
+      document.getElementById('noveltyBar').style.width  = mapScore(noveltyScore) + '%';
+
+      const summary = document.getElementById('spectrumSummary');
+      summary.textContent =
+        'Right now your brain looks ' + tText.toLowerCase() + ', with ' +
+        sText.toLowerCase() + ' senses, ' +
+        eText.toLowerCase() + ' emotions, and ' +
+        nText.toLowerCase() + ' novelty drive.';
+
+      renderRadar();
+    }
+
+    function renderRadar() {
+      const svg = document.getElementById('radarSvg');
+      if (!svg) return;
+      const { thinkingScore, sensoryScore, emotionScore, noveltyScore } = state.spectrum;
+      const scores = [thinkingScore, sensoryScore, emotionScore, noveltyScore];
+      const norm = scores.map(s => (s + 2) / 4); // 0..1
+
+      const cx = 100, cy = 100, r = 70;
+      let grid = '';
+      [0.25, 0.5, 0.75, 1].forEach(level => {
+        const rr = r * level;
+        const pts = [];
+        for (let i = 0; i < 4; i++) {
+          const angle = -Math.PI / 2 + i * (2 * Math.PI / 4);
+          const x = cx + rr * Math.cos(angle);
+          const y = cy + rr * Math.sin(angle);
+          pts.push(x + ',' + y);
+        }
+        grid += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="rgba(148,163,184,0.3)" stroke-width="0.5" />';
+      });
+
+      let polyPts = '';
+      for (let i = 0; i < 4; i++) {
+        const angle = -Math.PI / 2 + i * (2 * Math.PI / 4);
+        const rr = r * (0.2 + 0.8 * norm[i]); // minimum radius
+        const x = cx + rr * Math.cos(angle);
+        const y = cy + rr * Math.sin(angle);
+        polyPts += x + ',' + y + ' ';
+      }
+
+      svg.innerHTML =
+        '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r+4)+'" fill="rgba(15,23,42,1)" stroke="rgba(15,23,42,1)" />' +
+        grid +
+        '<polygon points="'+polyPts.trim()+'" fill="rgba(56,189,248,0.35)" stroke="#38bdf8" stroke-width="1.5" />' +
+        '<circle cx="'+cx+'" cy="'+cy+'" r="2" fill="#38bdf8" />';
+    }
+
+    /* Journal */
+    const journalTextEl = document.getElementById('journalText');
+    const journalStressEl = document.getElementById('journalStress');
+    const journalStressLabelEl = document.getElementById('journalStressLabel');
+
+    journalStressEl.addEventListener('input', () => {
+      journalStressLabelEl.textContent = journalStressEl.value;
+    });
+
+    journalTextEl.addEventListener('input', () => {
+      state.drafts.journalText = journalTextEl.value;
+      journalDirty = journalTextEl.value.trim().length > 0;
+      saveState();
+    });
+
+    function formatDateTime(d) {
+      const date = d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+      const time = d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' });
+      return date + ' ' + time;
+    }
+
+    function timeAgo(ts) {
+      const diff = Date.now() - ts;
+      const mins = Math.round(diff / 60000);
+      if (mins < 1) return 'Just now';
+      if (mins < 60) return mins + ' min ago';
+      const hours = Math.round(mins / 60);
+      if (hours < 24) return hours + ' hr ago';
+      const days = Math.round(hours / 24);
+      return days + ' day' + (days === 1 ? '' : 's') + ' ago';
+    }
+
+    function saveJournalEntry() {
+      const text = journalTextEl.value.trim();
+      const stress = parseInt(journalStressEl.value, 10);
+      const grounded = document.getElementById('journalGrounded').value;
+      const selfGround = document.getElementById('journalSelfGround').checked;
+      const realityCheck = document.getElementById('journalRealityCheck').checked;
+
+      if (!text && !state.drafts.journalText) {
+        alert('Write something first, even if it is short.');
+        return;
+      }
+      const entry = {
+        id: Date.now(),
+        text: text || state.drafts.journalText,
+        stress,
+        grounded,
+        selfGround,
+        realityCheck,
+        timestamp: Date.now()
+      };
+      state.journal.push(entry);
+      state.drafts.journalText = '';
+      saveState();
+      journalTextEl.value = '';
+      journalDirty = false;
+      document.getElementById('journalSelfGround').checked = false;
+      document.getElementById('journalRealityCheck').checked = false;
+      renderJournal();
+    }
+
+    function analyzeJournalPatterns() {
+      const entries = state.journal;
+      if (!entries || entries.length < 3) return null;
+      const recent = entries.slice(-10);
+      const avgStress = recent.reduce((sum,e)=>sum+e.stress,0) / recent.length;
+      const ungroundedCount = recent.filter(e => e.grounded === 'ungrounded' || e.grounded === 'shutdown').length;
+      const highStressCount = recent.filter(e => e.stress >= 7).length;
+      const trendingUp = (() => {
+        if (recent.length < 3) return false;
+        const last3 = recent.slice(-3);
+        return last3[0].stress <= last3[1].stress && last3[1].stress <= last3[2].stress;
+      })();
+      return {
+        avgStress: avgStress.toFixed(1),
+        ungroundedRatio: ungroundedCount / recent.length,
+        highStressRatio: highStressCount / recent.length,
+        trendingUp
+      };
+    }
+
+    function groundedLabel(entry) {
+      if (entry.grounded === 'grounded') return 'Grounded enough';
+      if (entry.grounded === 'ungrounded') return 'A bit unsteady';
+      return 'Shutdown / numb';
+    }
+
+    function renderJournal() {
+      const listEl = document.getElementById('journalList');
+      listEl.innerHTML = '';
+      const patternsEl = document.getElementById('journalPatterns');
+
+      const entries = state.journal.slice().sort((a,b)=>b.timestamp - a.timestamp);
+      if (entries.length === 0) {
+        patternsEl.textContent = 'Once you have a few entries, I’ll gently mirror back patterns I see in stress and grounding.';
+        return;
+      }
+
+      const stats = analyzeJournalPatterns();
+      if (stats) {
+        const stressMsg = `Average stress (last 10 entries): ${stats.avgStress}/10.`;
+        const ungroundPct = Math.round(stats.ungroundedRatio * 100);
+        const highStressPct = Math.round(stats.highStressRatio * 100);
+        let extra = '';
+        if (ungroundPct >= 40) {
+          extra += ` You marked “ungrounded” or “shutdown” in ${ungroundPct}% of recent entries — that might be worth noticing.`;
+        }
+        if (highStressPct >= 40) {
+          extra += ` Stress was 7+ in ${highStressPct}% of your last entries. Consider adding more grounding or support.`;
+        }
+        if (stats.trendingUp) {
+          extra += ` Your last 3 entries show stress trending upward. It might be a good moment to slow down and ground.`;
+        }
+        patternsEl.textContent = stressMsg + extra;
+      } else {
+        patternsEl.textContent = 'You have some entries. As you add more, I’ll start reflecting patterns back to you here.';
+      }
+
+      entries.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'journal-entry';
+        const d = new Date(entry.timestamp);
+        const meta = document.createElement('div');
+        meta.className = 'journal-meta';
+
+        const timeSpan = document.createElement('span');
+        timeSpan.textContent = timeAgo(entry.timestamp);
+        timeSpan.title = formatDateTime(d);
+
+        const stressSpan = document.createElement('span');
+        stressSpan.className = 'pill';
+        stressSpan.textContent = `Stress ${entry.stress}/10`;
+
+        const groundSpan = document.createElement('span');
+        groundSpan.className = 'pill';
+        groundSpan.textContent = groundedLabel(entry);
+        if (entry.grounded === 'grounded') groundSpan.classList.add('grounded-ok');
+        else if (entry.grounded === 'ungrounded') groundSpan.classList.add('grounded-warn');
+        else groundSpan.classList.add('grounded-bad');
+
+        if (entry.selfGround) {
+          const sg = document.createElement('span');
+          sg.className = 'pill grounded-ok';
+          sg.textContent = 'Self as ground';
+          meta.appendChild(sg);
+        }
+        if (entry.realityCheck) {
+          const rc = document.createElement('span');
+          rc.className = 'pill grounded-warn';
+          rc.textContent = 'Reality check done';
+          meta.appendChild(rc);
+        }
+
+        meta.prepend(stressSpan);
+        meta.prepend(timeSpan);
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'journal-text';
+        textDiv.textContent = entry.text;
+
+        div.appendChild(meta);
+        div.appendChild(textDiv);
+        listEl.appendChild(div);
+      });
+
+      // Draft restore hint
+      const draftHint = document.getElementById('journalDraftHint');
+      if (state.drafts.journalText && !journalTextEl.value) {
+        journalTextEl.value = state.drafts.journalText;
+        draftHint.style.display = 'block';
+        journalDirty = true;
+      } else {
+        draftHint.style.display = 'none';
+      }
+    }
+
+    function exportJournal() {
+      if (!state.journal.length) {
+        alert('No journal entries to export yet.');
+        return;
+      }
+      const text = state.journal
+        .sort((a,b)=>a.timestamp - b.timestamp)
+        .map(e => {
+          const date = formatDateTime(new Date(e.timestamp));
+          const g = groundedLabel(e);
+          const sg = e.selfGround ? ' | self-grounded' : '';
+          const rc = e.realityCheck ? ' | reality-checked' : '';
+          return `${date}\nStress: ${e.stress}/10 | ${g}${sg}${rc}\n${e.text}\n\n---\n\n`;
+        }).join('');
+      const blob = new Blob([text], { type:'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mental-compass-journal-${new Date().toISOString().split('T')[0]}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    window.addEventListener('beforeunload', (e) => {
+      if (journalDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
+
+    /* Timer */
+    function startTimer(minutes) {
+      if (timerInterval) clearInterval(timerInterval);
+      timerRemaining = minutes * 60;
+      document.getElementById('timerDisplay').style.display = 'block';
+      updateTimerDisplay();
+      timerInterval = setInterval(() => {
+        timerRemaining -= 1;
+        if (timerRemaining <= 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          timerRemaining = 0;
+          updateTimerDisplay();
+          alert('Timer finished. Take a breath, feel your body, and do a quick reality check before choosing to go further.');
+        } else {
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      timerRemaining = 0;
+      updateTimerDisplay();
+      document.getElementById('timerDisplay').style.display = 'none';
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(timerRemaining / 60);
+      const s = timerRemaining % 60;
+      const val = (m.toString().padStart(2,'0')) + ':' + (s.toString().padStart(2,'0'));
+      document.getElementById('timerValue').textContent = val;
+    }
+
+    /* Anchors */
+    function saveAnchors() {
+      const text = document.getElementById('anchorsText').value;
+      state.anchors = text;
+      saveState();
+      document.getElementById('anchorsMsg').textContent = 'Anchors saved.';
+      updateAnchorsDisplay();
+      setTimeout(() => document.getElementById('anchorsMsg').textContent = '', 2500);
+    }
+
+    function updateAnchorsDisplay() {
+      const el = document.getElementById('anchorsList');
+      if (!state.anchors || !state.anchors.trim()) {
+        el.textContent = 'You haven’t added anchors yet.';
+        return;
+      }
+      el.textContent = state.anchors;
+    }
+
+    /* Connections */
+    function generateHandle() {
+      const animals = ['fox','raven','lynx','owl','wolf','dragonfly','otter','moth','sparrow','tiger'];
+      const vibes = ['neuron','pattern','signal','static','hyperfocus','midnight','lofi','fractal','insight','compass'];
+      const a = animals[Math.floor(Math.random()*animals.length)];
+      const v = vibes[Math.floor(Math.random()*vibes.length)];
+      const num = Math.floor(1000 + Math.random()*8999);
+      const handle = `${v}_${a}_${num}`;
+      state.connections.dummyHandle = handle;
+
+      const intro =
+`Hi, I'm using a self-reflection tool called "The Mental Compass" to better understand how my brain works.
+
+I'm looking for people whose brains feel similar to mine — pattern-driven, emotionally intense, curious, and trying to stay grounded while thinking deeply.
+
+I'm not looking for drama or rescue, just honest conversation with someone who gets what it's like to be neurodivergent on the inside.
+
+If that sounds like you, feel free to say hi. If not, no worries at all.`;
+
+      state.connections.introTemplate = intro;
+      saveState();
+      document.getElementById('handleBlock').style.display = 'block';
+      document.getElementById('introBlock').style.display = 'block';
+      document.getElementById('dummyHandle').textContent = handle;
+      document.getElementById('introTemplate').textContent = intro;
+    }
+
+    /* Settings */
+    function changePasscode() {
+      const val = document.getElementById('settingsPasscode').value.trim();
+      const msg = document.getElementById('settingsPasscodeMsg');
+      if (!val) {
+        msg.textContent = 'Passcode unchanged.';
+        return;
+      }
+      if (val.length < 4 || val.length > 32) {
+        msg.textContent = 'Use 4–32 characters.';
+        msg.style.color = '#fca5a5';
+        return;
+      }
+      state.passcode = val;
+      saveState();
+      msg.textContent = 'Passcode updated.';
+      msg.style.color = '#a5f3fc';
+      setTimeout(()=>{msg.textContent='';},2500);
+    }
+
+    function clearAllData() {
+      const ok = confirm('This will erase journal entries, spectrum, anchors, and handles from this browser. Continue?');
+      if (!ok) return;
+      localStorage.removeItem(STORAGE_KEY);
+      document.getElementById('clearMsg').textContent = 'Data cleared. Reload the page to start fresh.';
+    }
+
+    /* Spotify helper */
+    function openSpotify() {
+      const song = document.getElementById('spotifySong').value.trim() || '';
+      const q = encodeURIComponent(`Lo-Fi version of ${song}`.trim());
+      window.open(`https://open.spotify.com/search/${q}`, '_blank');
+    }
+
+    /* Summary toggle +/- */
+    document.addEventListener('toggle', (e) => {
+      if (e.target.tagName === 'DETAILS') {
+        const summary = e.target.querySelector('.summary-toggle');
+        if (summary) summary.textContent = e.target.open ? '−' : '+';
+      }
+    }, true);
+
+    /* Initial render */
+    function renderAll() {
+      // Spectrum
+      renderSpectrum();
+      // Journal
+      if (state.drafts && state.drafts.journalText) {
+        journalTextEl.value = state.drafts.journalText;
+        journalDirty = journalTextEl.value.trim().length > 0;
+        document.getElementById('journalDraftHint').style.display = 'block';
+      }
+      renderJournal();
+      // Anchors
+      document.getElementById('anchorsText').value = state.anchors || '';
+      updateAnchorsDisplay();
+      // Connections
+      if (state.connections.dummyHandle) {
+        document.getElementById('handleBlock').style.display = 'block';
+        document.getElementById('introBlock').style.display = 'block';
+        document.getElementById('dummyHandle').textContent = state.connections.dummyHandle;
+        document.getElementById('introTemplate').textContent = state.connections.introTemplate || '';
+      }
+      showPage('home');
+    }
+
+    // Kick off
+    initAuth();
+  </script>
+</body>
+</html>
