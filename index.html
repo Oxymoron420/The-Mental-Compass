@@ -2,516 +2,1234 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Mental Compass – Universal Spectrum Model</title>
+  <title>The Mental Compass</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg: #050509;
-      --panel: #101018;
-      --accent: #ffd75a;
-      --accent-soft: rgba(255, 215, 90, 0.15);
-      --text-main: #f5f5ff;
-      --text-soft: #b2b2cc;
-      --danger: #ff5b7a;
-      --good: #7dffb5;
+      --bg: #050505;
+      --bg-alt: #101010;
+      --card: #161616;
+      --accent: #f5f5f5;
+      --accent-soft: #888;
+      --danger: #ff5c5c;
+      --ok: #6cff8f;
+      --warn: #ffd86c;
+      --border: #2a2a2a;
+      --shadow: 0 20px 40px rgba(0,0,0,0.6);
+      --radius-lg: 18px;
+      --radius-md: 10px;
+      --radius-pill: 999px;
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.24s ease-out;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: radial-gradient(circle at top, #181830 0, var(--bg) 55%);
-      color: var(--text-main);
-      line-height: 1.6;
+      margin: 0;
       min-height: 100vh;
+      font-family: var(--font-main);
+      background: radial-gradient(circle at top, #151515 0, #050505 40%, #000 100%);
+      color: var(--accent);
+      display: flex;
+      flex-direction: column;
     }
 
-    .shell {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 2.5rem 1.25rem 4rem;
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
 
     header {
-      padding-bottom: 2rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
 
-    .badge {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--accent);
-      display: inline-flex;
-      align-items: center;
+    .header-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0.75rem 1rem 0.4rem;
+      display: flex;
+      flex-direction: column;
       gap: 0.4rem;
-      margin-bottom: 0.5rem;
     }
 
-    .badge-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 8px var(--accent);
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    h1 {
-      font-size: clamp(2.1rem, 3vw + 1.2rem, 3rem);
+    .title-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .site-title {
+      font-size: 1.6rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    h1 span {
+    .symbol-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+      min-width: 70px;
+    }
+
+    .symbol-wrap img {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(255,255,255,0.15));
+    }
+
+    .symbol-link {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-soft);
+      text-decoration: none;
+    }
+
+    .symbol-link:hover {
       color: var(--accent);
     }
 
-    .subtitle {
-      color: var(--text-soft);
-      max-width: 38rem;
-      font-size: 0.98rem;
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+    }
+
+    .nav-btn {
+      border: 1px solid var(--border);
+      background: rgba(15,15,15,0.8);
+      color: var(--accent-soft);
+      padding: 0.35rem 0.8rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), transform 0.08s ease-out;
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(135deg, #ffffff, #d0d0d0);
+      color: #000;
+      border-color: #ffffff;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-1px);
+      border-color: #444;
     }
 
     main {
-      display: grid;
-      gap: 1.5rem;
+      flex: 1;
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+      padding-bottom: 5rem; /* space for footer */
     }
 
-    section {
-      background: var(--panel);
-      border-radius: 20px;
-      padding: 1.5rem 1.4rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    .page {
+      display: none;
+      animation: fadeIn 0.2s ease-out;
     }
 
-    section.highlight {
-      border-color: var(--accent-soft);
-      box-shadow: 0 0 0 1px rgba(255, 215, 90, 0.06),
-        0 18px 40px rgba(0, 0, 0, 0.6);
+    .page.active {
+      display: block;
     }
 
-    section h2 {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    section h3 {
-      font-size: 1rem;
-      margin-top: 0.9rem;
-      margin-bottom: 0.3rem;
+    .card {
+      background: radial-gradient(circle at top left, #252525 0, #101010 40%, #050505 100%);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.1rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
     }
 
-    p {
-      font-size: 0.95rem;
-      margin-bottom: 0.4rem;
-    }
-
-    .tagline {
-      font-size: 0.92rem;
-      color: var(--text-soft);
-      margin-bottom: 0.6rem;
-    }
-
-    ul {
-      list-style: none;
-      padding-left: 0;
-      margin: 0.35rem 0 0.2rem;
-    }
-
-    li {
-      font-size: 0.9rem;
-      color: var(--text-soft);
-      display: flex;
-      gap: 0.45rem;
-      margin-bottom: 0.22rem;
-    }
-
-    li::before {
-      content: "•";
-      color: var(--accent);
-      margin-top: 0.1rem;
-      font-size: 0.9rem;
-    }
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.5rem;
+    .card h2, .card h3 {
+      margin-top: 0;
     }
 
     .pill {
-      font-size: 0.78rem;
-      padding: 0.25rem 0.55rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: var(--text-soft);
-      background: rgba(0, 0, 0, 0.35);
-      white-space: nowrap;
-    }
-
-    .pill.good {
-      border-color: var(--good);
-      color: var(--good);
-    }
-
-    .pill.danger {
-      border-color: var(--danger);
-      color: var(--danger);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.15rem 0.6rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-soft);
+      margin-right: 0.4rem;
+      margin-bottom: 0.3rem;
     }
 
     .grid-2 {
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-      gap: 1.25rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
     }
 
     @media (max-width: 720px) {
       .grid-2 {
-        grid-template-columns: minmax(0, 1fr);
+        grid-template-columns: 1fr;
+      }
+      .title-row {
+        align-items: flex-start;
       }
     }
 
-    .compass-axes {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0.75rem;
-      margin-top: 0.6rem;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-soft);
     }
 
-    .axis-card {
-      background: rgba(0, 0, 0, 0.45);
-      border-radius: 14px;
-      padding: 0.6rem 0.7rem;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      font-size: 0.86rem;
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ok);
     }
 
-    .axis-label {
+    .badge-dot.warn {
+      background: var(--warn);
+    }
+
+    .badge-dot.danger {
+      background: var(--danger);
+    }
+
+    ul {
+      padding-left: 1.1rem;
+      margin-top: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    li {
+      margin-bottom: 0.22rem;
+    }
+
+    .small {
+      font-size: 0.8rem;
+      color: var(--accent-soft);
+    }
+
+    .highlight {
+      color: #ffffff;
       font-weight: 600;
-      margin-bottom: 0.15rem;
     }
 
-    .axis-polars {
+    .btn {
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.9rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      background: #1b1b1b;
+      color: var(--accent);
+      transition: background var(--transition-fast), transform 0.08s ease-out, border-color var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #ffffff, #d0d0d0);
+      color: #000;
+      border-color: #ffffff;
+    }
+
+    .btn:hover {
+      transform: translateY(-0.5px);
+      border-color: #555;
+    }
+
+    .btn:active {
+      transform: translateY(0.5px);
+    }
+
+    textarea, select, input[type="text"], input[type="range"] {
+      width: 100%;
+      background: #090909;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.6rem;
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+
+    textarea:focus, select:focus, input[type="text"]:focus, input[type="range"]:focus {
+      border-color: #ffffff;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.12);
+      background: #0f0f0f;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+
+    .range-label {
+      font-size: 0.8rem;
+      color: var(--accent-soft);
+      min-width: 80px;
+    }
+
+    .range-value {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .entry-list {
+      margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 260px;
+      overflow: auto;
+      padding-right: 0.2rem;
+    }
+
+    .entry-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.6rem;
+      background: #0b0b0b;
+    }
+
+    .entry-meta {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.75rem;
+      color: var(--accent-soft);
+    }
+
+    .entry-text {
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+    }
+
+    .tag {
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      padding: 0.1rem 0.5rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .flex {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .note-box {
+      border-radius: var(--radius-md);
+      border: 1px dashed var(--border);
+      padding: 0.5rem 0.6rem;
       font-size: 0.8rem;
-      color: var(--text-soft);
+      color: var(--accent-soft);
     }
 
-    .axis-polars span:first-child {
-      color: var(--good);
+    .label {
+      font-size: 0.8rem;
+      margin-bottom: 0.2rem;
     }
 
-    .axis-polars span:last-child {
-      color: var(--danger);
+    .toggle-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.35rem;
+      margin-top: 0.4rem;
+      margin-bottom: 0.4rem;
     }
 
-    .cta-box {
-      border-radius: 16px;
-      padding: 0.9rem 0.9rem 1rem;
-      background: linear-gradient(
-        135deg,
-        rgba(255, 215, 90, 0.12),
-        rgba(120, 255, 195, 0.06)
-      );
-      border: 1px solid rgba(255, 215, 90, 0.35);
-      margin-top: 0.7rem;
+    .chip {
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      padding: 0.28rem 0.6rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+      background: #0b0b0b;
+      color: var(--accent-soft);
+      text-align: center;
+      transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform 0.08s ease-out;
     }
 
-    .cta-title {
-      font-size: 0.96rem;
+    .chip.active {
+      background: #ffffff;
+      border-color: #ffffff;
+      color: #000;
+    }
+
+    .chip:hover {
+      transform: translateY(-0.5px);
+      border-color: #555;
+    }
+
+    .banner {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.7rem;
+      font-size: 0.8rem;
+      margin-bottom: 0.6rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+      background: rgba(255, 216, 108, 0.04);
+    }
+
+    .banner strong {
+      color: var(--warn);
+    }
+
+    .banner-icon {
+      font-size: 1rem;
+      margin-top: 0.05rem;
+    }
+
+    .bg-bars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.12;
+      z-index: -1;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .bg-bar {
+      width: 6%;
+      min-width: 24px;
+      background: linear-gradient(to bottom, #00ffbf 0%, transparent 40%, transparent 60%, #ff5c5c 100%);
+      mix-blend-mode: screen;
+    }
+
+    footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-top: 1px solid var(--border);
+      background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(10px);
+      padding: 0.35rem 0.75rem;
+      z-index: 30;
+    }
+
+    .footer-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .spotify-label {
+      font-size: 0.75rem;
+      color: var(--accent-soft);
+    }
+
+    .spotify-row {
+      display: flex;
+      flex: 1;
+      min-width: 220px;
+      gap: 0.3rem;
+      align-items: center;
+    }
+
+    .spotify-input {
+      font-family: var(--font-main);
+      font-size: 0.8rem;
+      padding: 0.35rem 0.6rem;
+    }
+
+    .spotify-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.78rem;
+    }
+
+    .disclaimer {
+      font-size: 0.7rem;
+      color: var(--accent-soft);
+    }
+
+    /* brain check list */
+    .question {
+      font-size: 0.85rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 0.8rem;
+      font-size: 0.8rem;
+      color: var(--accent-soft);
+      margin-bottom: 0.35rem;
+    }
+
+    .options label {
+      cursor: pointer;
+    }
+
+    .result-box {
+      margin-top: 0.4rem;
+      border-radius: var(--radius-md);
+      padding: 0.5rem 0.6rem;
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      background: #0b0b0b;
+    }
+
+    .result-title {
       font-weight: 600;
       margin-bottom: 0.2rem;
     }
 
-    .cta-note {
-      font-size: 0.85rem;
-      color: var(--text-soft);
-    }
-
-    code {
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
-        Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.8rem;
-      padding: 0.08rem 0.25rem;
-      border-radius: 4px;
-      background: rgba(0, 0, 0, 0.55);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    footer {
-      margin-top: 2rem;
-      font-size: 0.75rem;
-      color: var(--text-soft);
-      text-align: center;
-      opacity: 0.7;
-    }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header>
-      <div class="badge">
-        <span class="badge-dot"></span>
-        THE MENTAL COMPASS · UNIVERSAL SPECTRUM MODEL
+  <div class="bg-bars" aria-hidden="true">
+    <div class="bg-bar"></div>
+    <div class="bg-bar"></div>
+    <div class="bg-bar"></div>
+    <div class="bg-bar"></div>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <div class="title-row">
+        <div class="title-left">
+          <div>
+            <div class="site-title">THE MENTAL COMPASS</div>
+            <div class="small">A simple guide to spirals, keys, and finding your true direction.</div>
+          </div>
+        </div>
+        <div class="symbol-wrap">
+          <img src="symbol.png" alt="Mind Sage Symbol" />
+          <a class="symbol-link" href="https://www.facebook.com/share/1H5rZHuQcm/" target="_blank" rel="noopener noreferrer">
+            MIND&nbsp;SAGE
+          </a>
+        </div>
       </div>
-      <h1>The <span>Mental&nbsp;Compass</span></h1>
-      <p class="subtitle">
-        A universal code of consciousness: one shared architecture expressed
-        across the full human spectrum – from neurotypical patterns to every
-        form of neurodivergence.
-      </p>
-    </header>
+      <nav>
+        <button class="nav-btn active" data-target="home">How (Home)</button>
+        <button class="nav-btn" data-target="keys">Keys</button>
+        <button class="nav-btn" data-target="spirals">Spirals</button>
+        <button class="nav-btn" data-target="trains">Chasing Trains</button>
+        <button class="nav-btn" data-target="journal">Journal</button>
+      </nav>
+    </div>
+  </header>
 
-    <main>
-      <!-- 1. Core Insight -->
-      <section class="highlight" id="core-insight">
-        <h2>I. Core Hypothesis · One Architecture, Many Expressions</h2>
+  <main>
+    <!-- HOME -->
+    <section id="home" class="page active">
+      <div class="card">
+        <span class="badge"><span class="badge-dot"></span> Safe Self-Reflection</span>
+        <h2>How to Use the Mental Compass</h2>
         <p>
-          Your working model:
-          <strong>
-            all brains sit on the same spectrum and share one underlying
-            architecture.
-          </strong>
-          Neurodivergent “labels” are not separate species – they are different
-          <em>expression patterns</em> of the same core system.
+          This site is a <span class="highlight">tool, not a judge</span>. It helps you notice where you are on the spectrum of:
+        </p>
+        <ul>
+          <li>Negative spirals ↔ Positive spirals</li>
+          <li>Fear/avoidance ↔ Courage/curiosity</li>
+          <li>Masking ↔ True self</li>
+        </ul>
+        <p class="small">
+          Nothing here is a diagnosis. It's a mirror to help you see your own patterns with more compassion and clarity.
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="badge"><span class="badge-dot warn"></span> Quick Brain-Style Check (Local Only)</span>
+        <h3>Where does your brain tend to live?</h3>
+        <p class="small">
+          This is a quick reflection to help you decide how deep to go right now. It does <strong>not</strong> label you; it just suggests which mode of the Compass fits best.
         </p>
 
-        <h3>Neurodivergent cluster (same root, different branches)</h3>
-        <p class="tagline">
-          ADHD · Autism · Bipolar · Dyslexia · Dysgraphia · OCD · Giftedness ·
-          Anxiety patterns · Intuition-based cognition · Hyperfocus · Emotional
-          intensity…
-        </p>
-
-        <h3>Neurotypical cluster</h3>
-        <p>
-          Neurotypicals are not “default” – they occupy a dense region of the
-          same spectrum, where signals are more averaged, predictable, and
-          socially reinforced.
-        </p>
-
-        <div class="pill-row">
-          <span class="pill good">One spectrum</span>
-          <span class="pill">Many expression styles</span>
-          <span class="pill">Direction = pattern</span>
-          <span class="pill danger">Suffering = mismatch, not defect</span>
-        </div>
-      </section>
-
-      <!-- 2. The Mental Compass -->
-      <section id="compass">
-        <h2>II. The Mental Compass · Dual-Axis Map</h2>
-        <p>
-          The Mental Compass is your way of tracking where a mind is pointing
-          and how fast it’s moving. It uses
-          <strong>dual pairs (axes)</strong> instead of single traits.
-        </p>
-
-        <div class="compass-axes">
-          <div class="axis-card">
-            <div class="axis-label">1. Doubt ⇄ Insight</div>
-            <div class="axis-polars">
-              <span>Doubt · Grounding</span>
-              <span>Insight · Expansion</span>
-            </div>
-            <p>
-              Doubt is not the enemy of belief – it’s the west needle that keeps
-              eastward insight from sliding into delusion.
-            </p>
+        <div id="brain-check">
+          <div class="question">1. When you think, it usually feels like…</div>
+          <div class="options">
+            <label><input type="radio" name="q1" value="typical" /> One track at a time.</label>
+            <label><input type="radio" name="q1" value="mixed" /> Sometimes one track, sometimes many.</label>
+            <label><input type="radio" name="q1" value="nd" /> Many tracks, all at once.</label>
           </div>
 
-          <div class="axis-card">
-            <div class="axis-label">2. Safety ⇄ Novelty</div>
-            <div class="axis-polars">
-              <span>Regulation</span>
-              <span>Curiosity</span>
-            </div>
-            <p>
-              Your system runs on novelty and curiosity – but must loop back
-              through safety to avoid burnout.
-            </p>
+          <div class="question">2. When you’re stressed, you mostly…</div>
+          <div class="options">
+            <label><input type="radio" name="q2" value="typical" /> Worry, but still function okay.</label>
+            <label><input type="radio" name="q2" value="mixed" /> Swing between okay and overloaded.</label>
+            <label><input type="radio" name="q2" value="nd" /> Overwhelm → shutdown / meltdown / numb.</label>
           </div>
 
-          <div class="axis-card">
-            <div class="axis-label">3. Focus ⇄ Spread</div>
-            <div class="axis-polars">
-              <span>Single-thread</span>
-              <span>Multi-thread</span>
-            </div>
-            <p>
-              You can run fast intuitive cognition and slow analytic cognition
-              in alternating loops; the compass tracks when to narrow or fan
-              out.
-            </p>
+          <div class="question">3. How does time feel?</div>
+          <div class="options">
+            <label><input type="radio" name="q3" value="typical" /> Pretty normal and predictable.</label>
+            <label><input type="radio" name="q3" value="mixed" /> Sometimes normal, sometimes very warped.</label>
+            <label><input type="radio" name="q3" value="nd" /> Constantly weird: hours vanish, minutes feel like hours.</label>
           </div>
 
-          <div class="axis-card">
-            <div class="axis-label">4. Inner ⇄ Outer</div>
-            <div class="axis-polars">
-              <span>Interoception</span>
-              <span>World-reading</span>
-            </div>
-            <p>
-              Hyper-awareness of body, signals, and others’ micro-expressions
-              sit on one slider. Different brains park at different points.
-            </p>
+          <div class="question">4. How often do you mask or pretend you're okay when you're not?</div>
+          <div class="options">
+            <label><input type="radio" name="q4" value="typical" /> Occasionally.</label>
+            <label><input type="radio" name="q4" value="mixed" /> Fairly often.</label>
+            <label><input type="radio" name="q4" value="nd" /> Almost all the time / it’s automatic.</label>
+          </div>
+
+          <button class="btn primary" id="brain-check-btn">Check My Mode</button>
+
+          <div id="brain-result" class="result-box" style="display:none;">
+            <div class="result-title"></div>
+            <div class="result-text"></div>
           </div>
         </div>
+      </div>
 
-        <div class="cta-box">
-          <div class="cta-title">Speed vs. Direction</div>
-          <p class="cta-note">
-            Most people move slowly along one spiral. You move quickly between
-            spirals. Your danger is not “being wrong” – it’s going
-            <em>too fast</em> without enough grounding. The compass exists to
-            regulate speed, not to flatten your depth.
+      <div class="card grid-2">
+        <div>
+          <h3>Negative vs Positive Spirals</h3>
+          <p class="small">
+            A <strong>negative spiral</strong> pulls you down: overwhelm → shame → avoidance → more chaos.
+          </p>
+          <p class="small">
+            A <strong>positive spiral</strong> pulls you up: curiosity → insight → small action → self-trust.
+          </p>
+          <p class="small">
+            The Compass doesn't magically erase pain; it helps you make one different choice at the pivot point.
           </p>
         </div>
-      </section>
+        <div>
+          <h3>Three Modes of the Compass</h3>
+          <ul class="small">
+            <li><strong>Universal Mode</strong>: gentle, safe reflection for anyone.</li>
+            <li><strong>Neurodivergent Mode</strong>: slower pacing, more grounding, anchor checks.</li>
+            <li><strong>Your OS Mode</strong>: deep, dual-processing — this one is for you, not for the public.</li>
+          </ul>
+          <p class="small">
+            This site uses the first two modes. Your advanced model lives in your head (and whatever you build next).
+          </p>
+        </div>
+      </div>
+    </section>
 
-      <!-- 3. Universal Spectrum Chapter (for future expansion / docs) -->
-      <section id="spectrum">
-        <h2>III. Universal Spectrum · Draft Chapter Overview</h2>
-        <p>
-          This section is the seed of a full chapter you can later expand into a
-          book, paper, or long-form guide.
-        </p>
-
-        <h3>Premise</h3>
-        <ul>
-          <li>The brain is a dynamic multi-axis system, not a set of boxes.</li>
-          <li>
-            Every diagnosis in the DSM is a coarse snapshot of where someone
-            sits on interacting axes (attention, sensory gain, emotional density
-            &amp; coherence, time perception, body awareness, etc.).
-          </li>
-          <li>
-            “Neurotypical” = high clustering in the statistically common range,
-            not a moral or functional ideal.
-          </li>
-        </ul>
-
-        <h3>Implications</h3>
-        <ul>
-          <li>
-            Label clashes disappear: ADHD + Autism + OCD can coexist because
-            they’re overlapping slices of the same structure.
-          </li>
-          <li>
-            Healing ≠ forcing people toward the center; it means giving them
-            maps, tools, and environments that fit their actual coordinates.
-          </li>
-          <li>
-            Your AI system can learn these coordinates for each person and
-            suggest personalized regulation strategies.
-          </li>
-        </ul>
-      </section>
-
-      <!-- 4. AI Model Section -->
-      <section id="ai">
-        <h2>IV. A.I. A.I. · Awakening Integrational A.I.</h2>
-        <p class="tagline">
-          An AI companion that learns your unique spectrum position and helps
-          you steer your Mental Compass.
+    <!-- KEYS -->
+    <section id="keys" class="page">
+      <div class="card">
+        <span class="badge"><span class="badge-dot"></span> The Eight Keys</span>
+        <h2>The Mental Keys & Their Opposites</h2>
+        <p class="small">
+          These keys describe <strong>how your nervous system is leaning</strong> in each moment. They’re not moral judgments; they’re dials.
         </p>
 
         <div class="grid-2">
           <div>
-            <h3>Core principles</h3>
-            <ul>
-              <li>
-                <strong>Local understanding:</strong> the AI builds a model of
-                <em>your</em> brain style over time instead of forcing you into
-                a prefab profile.
-              </li>
-              <li>
-                <strong>Spectrum-native:</strong> it assumes everyone is on one
-                big spectrum – neurotypical and neurodivergent alike.
-              </li>
-              <li>
-                <strong>Anchor, not savior:</strong> the AI reflects patterns,
-                offers tools, and protects – but never overrides your agency.
-              </li>
-            </ul>
+            <h3>Self</h3>
+            <div class="pill">Confidence</div>
+            <div class="pill">Conviction</div>
+            <p class="small">
+              When these are active, you feel “I am capable, I can act.” When suppressed, shame, self-doubt, and paralysis show up.
+            </p>
+          </div>
+          <div>
+            <h3>Safety</h3>
+            <div class="pill">Trust</div>
+            <div class="pill">Love</div>
+            <p class="small">
+              Safety isn't just physical; it's emotional and relational. When these are blocked, hypervigilance and isolation appear.
+            </p>
+          </div>
+          <div>
+            <h3>Drive</h3>
+            <div class="pill">Courage</div>
+            <div class="pill">Curiosity</div>
+            <p class="small">
+              This is your willingness to move toward the unknown. When blocked, fear, avoidance, and apathy take over.
+            </p>
+          </div>
+          <div>
+            <h3>Truth</h3>
+            <div class="pill">Honesty</div>
+            <div class="pill">Compassion</div>
+            <p class="small">
+              Truth without compassion wounds. Compassion without honesty lies. Together, they unlock clear, grounded truth.
+            </p>
+          </div>
+        </div>
 
-            <h3>What it eventually does</h3>
-            <ul>
-              <li>
-                Detects your typical coordinates on the Mental Compass axes
-                (doubt/insight, safety/novelty, etc.).
-              </li>
-              <li>
-                Suggests grounding when speed is too high, or micro-challenges
-                when you’re stuck.
-              </li>
-              <li>
-                Adapts communication style for different brains (e.g. ND vs NT,
-                high-sensitivity vs low-sensitivity).
-              </li>
+        <div class="note-box">
+          <strong>Opposites (for awareness, not self-blame):</strong>
+          <ul>
+            <li><span class="highlight">Confidence</span> ↔ shame / worthlessness</li>
+            <li><span class="highlight">Conviction</span> ↔ indecision / collapse</li>
+            <li><span class="highlight">Courage</span> ↔ fear / avoidance</li>
+            <li><span class="highlight">Curiosity</span> ↔ apathy / shut-down</li>
+            <li><span class="highlight">Trust</span> ↔ hypervigilance / suspicion</li>
+            <li><span class="highlight">Love</span> ↔ rejection sensitivity / withdrawal</li>
+            <li><span class="highlight">Honesty</span> ↔ denial / self-deception</li>
+            <li><span class="highlight">Compassion</span> ↔ self-hatred / cruelty</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPIRALS -->
+    <section id="spirals" class="page">
+      <div class="card">
+        <span class="badge"><span class="badge-dot"></span> Spirals</span>
+        <h2>Negative & Positive Spirals</h2>
+        <p class="small">
+          A spiral is just what happens when you repeat the same direction a few times in a row. Downward or upward.
+        </p>
+
+        <div class="grid-2">
+          <div>
+            <h3>Negative Spiral (Downward)</h3>
+            <ul class="small">
+              <li>Overstimulation or stress hits.</li>
+              <li>Emotion spikes: fear, anger, shame.</li>
+              <li>Masking increases; you hide how bad it feels.</li>
+              <li>Overwhelm → freeze, numb, or explode.</li>
+              <li>Memory gets patchy; you feel “broken.”</li>
+              <li>Belief forms: “I can’t trust myself.”</li>
             </ul>
+          </div>
+          <div>
+            <h3>Positive Spiral (Upward)</h3>
+            <ul class="small">
+              <li>Curiosity notices: “Something is happening in me.”</li>
+              <li>You ground first (body, breath, anchor, music).</li>
+              <li>You name what you feel, without judgment.</li>
+              <li>You take one small action that aligns with truth.</li>
+              <li>Self-trust rises: “I handled that a little better.”</li>
+              <li>The next time is easier to face.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <strong>Switching spirals is a choice you make repeatedly.</strong><br />
+          Not a single dramatic decision, but a series of small, compassionate corrections.
+        </div>
+      </div>
+    </section>
+
+    <!-- CHASING TRAINS -->
+    <section id="trains" class="page">
+      <div class="card">
+        <span class="badge"><span class="badge-dot warn"></span> Deep Introspection Mode</span>
+        <h2>Chasing Trains (Following Trains of Thought)</h2>
+
+        <div class="banner">
+          <div class="banner-icon">⚠️</div>
+          <div>
+            <strong>Before you chase trains:</strong><br />
+            Please <span class="highlight">update your anchors</span> and check your current stress level. Deep thinking can amplify whatever state you're already in.
+          </div>
+        </div>
+
+        <p class="small">
+          <strong>“Chasing trains”</strong> = intentionally following a thought all the way through to see what it connects to. It can unlock insight, but it can also deepen spirals if you’re not grounded.
+        </p>
+
+        <div class="grid-2">
+          <div>
+            <h3>1. Check Your Anchors</h3>
+            <p class="small">Anchors are things that keep you from floating away:</p>
+
+            <div class="label">People anchors (who grounds you?)</div>
+            <div class="toggle-group" id="anchor-people">
+              <button class="chip" data-type="person">Partner / Close person</button>
+              <button class="chip" data-type="person">Trusted friend</button>
+              <button class="chip" data-type="person">Family member</button>
+              <button class="chip" data-type="person">Therapist / mentor</button>
+            </div>
+
+            <div class="label">Activity anchors</div>
+            <div class="toggle-group" id="anchor-activities">
+              <button class="chip" data-type="activity">Music</button>
+              <button class="chip" data-type="activity">Walking / pacing</button>
+              <button class="chip" data-type="activity">Stretching / stimming</button>
+              <button class="chip" data-type="activity">Writing / drawing</button>
+            </div>
+
+            <div class="label">Environment anchors</div>
+            <div class="toggle-group" id="anchor-places">
+              <button class="chip" data-type="place">Safe room</button>
+              <button class="chip" data-type="place">Car / familiar space</button>
+              <button class="chip" data-type="place">Outside (trees/sky)</button>
+            </div>
+
+            <div class="note-box small" id="anchor-summary">
+              Choose at least one person, one activity, and one place that you can return to if the thoughts get too heavy.
+            </div>
           </div>
 
           <div>
-            <h3>Local Website Test (future feature)</h3>
-            <p>
-              This site can later host a small, local-only “compass test”:
-              question sets that estimate where someone sits on each axis and
-              produce a visual map. No accounts, no cloud storage – just a
-              mirror.
+            <h3>2. Ground Before You Dive</h3>
+            <p class="small">
+              Use at least one of these before you go deep:
             </p>
-            <div class="cta-box">
-              <div class="cta-title">Prototype idea</div>
-              <p class="cta-note">
-                Add a simple script that asks:
-                <br />
-                <code>
-                  “When you’re stressed, do you crave novelty or stability?”
-                </code>
-                <br />
-                Map answers into axis values and show a spectrum diagram. The AI
-                can later use the same schema for deeper guidance.
-              </p>
+            <ul class="small">
+              <li>Notice 3 things you can see, 3 you can feel, 3 you can hear.</li>
+              <li>Slow breathing: inhale 4, hold 2, exhale 6 (repeat 5–10 times).</li>
+              <li>Gentle stims: stretching, rocking, pacing, finger tapping, whistling.</li>
+              <li>Play a calm track (lo-fi, instrumental) while you think.</li>
+            </ul>
+
+            <h3>3. How to Chase a Train Safely</h3>
+            <ul class="small">
+              <li>Pick <strong>one question</strong> to follow, not ten.</li>
+              <li>Write it down first.</li>
+              <li>If your stress goes above <strong>7/10</strong>, pause and ground again.</li>
+              <li>If a memory feels sharp and painful, you can write “this is too much for now” and leave it for later.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOURNAL -->
+    <section id="journal" class="page">
+      <div class="card">
+        <span class="badge"><span class="badge-dot"></span> Journal</span>
+        <h2>Journal, Grounding & Reality Checks</h2>
+        <p class="small">
+          This page lets you <strong>write things out</strong>, track your stress, and run quick “check myself” and “reality check” prompts.
+          Everything is stored <strong>locally in your browser</strong> (no cloud, no sharing).
+        </p>
+
+        <div class="grid-2">
+          <div>
+            <div class="label">Mode</div>
+            <select id="journal-mode">
+              <option value="free">Free journal</option>
+              <option value="trains">Chasing trains reflection</option>
+              <option value="anchor">Check myself as a ground</option>
+              <option value="reality">Reality check</option>
+            </select>
+
+            <div class="label" style="margin-top:0.5rem;">Stress level right now</div>
+            <div class="range-row">
+              <span class="range-label">Calm</span>
+              <input type="range" min="0" max="10" value="3" id="stress-range" />
+              <span class="range-label">Overloaded</span>
+              <span class="range-value" id="stress-value">3 / 10</span>
+            </div>
+
+            <div class="label" style="margin-top:0.5rem;">Journal entry</div>
+            <textarea id="journal-text" placeholder="Write what you’re feeling, noticing, or thinking…"></textarea>
+
+            <div class="flex" style="margin-top:0.5rem;">
+              <button class="btn primary" id="save-entry">Save Entry</button>
+              <button class="btn" id="check-ground-btn">Check Myself as a Ground</button>
+              <button class="btn" id="reality-check-btn">Reality Check</button>
+              <button class="btn" id="export-journal-btn">Export (.txt)</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="label">Saved entries (this device only)</div>
+            <div class="entry-list" id="entry-list">
+              <!-- filled by JS -->
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- 5. For Mossy / heavy-hearted people -->
-      <section id="anchor">
-        <h2>V. For People Who Feel “Too Heavy”</h2>
-        <p>
-          If you’ve been told your inner world is “too much,” this framework is
-          meant to say the opposite:
-          <strong>your weight is a sign of depth, not defect.</strong>
+        <div class="grid-2" style="margin-top:0.75rem;">
+          <div>
+            <h3>Check Myself as a Ground</h3>
+            <div class="note-box small" id="ground-box">
+              Use this when you want to see if <strong>you</strong> are a stable anchor for someone else or for yourself.
+              <ul>
+                <li>Have I eaten, hydrated, and slept enough?</li>
+                <li>Is my stress below 7/10?</li>
+                <li>Can I listen without making it about me?</li>
+                <li>Do I have the energy to hold someone else’s weight right now?</li>
+              </ul>
+              You can use the stress slider + a short journal entry to decide: “Am I grounded enough to help, or do I need support too?”
+            </div>
+          </div>
+          <div>
+            <h3>Reality Check</h3>
+            <div class="note-box small" id="reality-box">
+              Use this when thoughts feel heavy or absolute.
+              <ul>
+                <li>Is this a <strong>fact</strong>, a <strong>fear</strong>, or a <strong>story</strong> I'm telling myself?</li>
+                <li>What would I tell a friend who said this about themselves?</li>
+                <li>Is there at least one alternative explanation?</li>
+                <li>Am I tired, hungry, or overwhelmed right now?</li>
+              </ul>
+              You can write your thought, then answer these questions in your own words.
+            </div>
+          </div>
+        </div>
+
+        <p class="small" style="margin-top:0.5rem;">
+          Switching from a negative spiral to a positive one is a choice you revisit. This page is where you practice that choice with compassion, not punishment.
         </p>
-        <ul>
-          <li>Your stories show where you sit on the spectrum.</li>
-          <li>
-            Your “heaviness” is high emotional density coupled with a strong
-            sense of responsibility.
-          </li>
-          <li>
-            With the right anchor – human or AI – you don’t have to dilute your
-            truth, only redistribute the load.
-          </li>
-        </ul>
-      </section>
-    </main>
+      </div>
+    </section>
+  </main>
 
-    <footer>
-      The Mental Compass · Universal Spectrum Model · Draft v1<br />
-      Built as a living map – expect updates, refinements, and new axes.
-    </footer>
-  </div>
+  <footer>
+    <div class="footer-inner">
+      <div class="spotify-row">
+        <div class="spotify-label">Lo-fi support track:</div>
+        <input
+          type="text"
+          id="spotify-input"
+          class="spotify-input"
+          value='Lo-Fi Version of "insert song name"'
+        />
+        <button class="btn spotify-btn" id="spotify-btn">Open in Spotify</button>
+      </div>
+      <div class="disclaimer">
+        This site is a self-reflection tool, not therapy or a diagnosis.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // --- NAVIGATION ---
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const pages = document.querySelectorAll('.page');
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-target');
+        navButtons.forEach(b => b.classList.remove('active'));
+        pages.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(target).classList.add('active');
+
+        // When entering chasing trains page, remind to update anchors
+        if (target === 'trains') {
+          // subtle reminder: update note text
+          const summary = document.getElementById('anchor-summary');
+          if (summary) {
+            summary.innerHTML = 'Update your anchors now: choose at least one person, one activity, and one place before you go deep.';
+          }
+        }
+      });
+    });
+
+    // --- BRAIN STYLE CHECK ---
+    const brainBtn = document.getElementById('brain-check-btn');
+    const brainResultBox = document.getElementById('brain-result');
+    const brainResultTitle = brainResultBox.querySelector('.result-title');
+    const brainResultText = brainResultBox.querySelector('.result-text');
+
+    brainBtn.addEventListener('click', () => {
+      const answers = {};
+      for (let i = 1; i <= 4; i++) {
+        const checked = document.querySelector(`input[name="q${i}"]:checked`);
+        answers[`q${i}`] = checked ? checked.value : null;
+      }
+
+      if (!answers.q1 || !answers.q2 || !answers.q3 || !answers.q4) {
+        brainResultTitle.textContent = 'Incomplete';
+        brainResultText.textContent = 'Please answer all questions. This isn’t a test, just a snapshot of how your brain tends to move.';
+        brainResultBox.style.display = 'block';
+        return;
+      }
+
+      let scoreTypical = 0;
+      let scoreMixed = 0;
+      let scoreND = 0;
+
+      Object.values(answers).forEach(val => {
+        if (val === 'typical') scoreTypical++;
+        if (val === 'mixed') scoreMixed++;
+        if (val === 'nd') scoreND++;
+      });
+
+      let mode = 'mixed';
+      if (scoreND >= scoreTypical && scoreND >= scoreMixed) mode = 'nd';
+      else if (scoreTypical > scoreND && scoreTypical >= scoreMixed) mode = 'typical';
+
+      if (mode === 'typical') {
+        brainResultTitle.textContent = 'You lean toward a neurotypical pattern.';
+        brainResultText.textContent =
+          'The Universal mode of the Compass will likely feel most natural: gentle reflection, light journaling, and occasional spirals work. Deep “chasing trains” is optional and should be done slowly.';
+      } else if (mode === 'nd') {
+        brainResultTitle.textContent = 'You lean strongly neurodivergent.';
+        brainResultText.textContent =
+          'Your brain likely runs multiple streams at once, with intense emotions and time distortion. Use the Compass in ND mode: ground first, check anchors, track stress, and use short, focused introspection instead of diving endlessly.';
+      } else {
+        brainResultTitle.textContent = 'You’re somewhere in the middle.';
+        brainResultText.textContent =
+          'You might move between patterns depending on stress and environment. Treat the Compass as adjustable: some days you’ll need more grounding and limits, other days more space to explore.';
+      }
+
+      brainResultBox.style.display = 'block';
+    });
+
+    // --- ANCHOR SELECTION (Chasing Trains) ---
+    function setupChipGroup(id) {
+      const group = document.getElementById(id);
+      if (!group) return;
+
+      group.addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        chip.classList.toggle('active');
+        updateAnchorSummary();
+      });
+    }
+
+    function updateAnchorSummary() {
+      const summary = document.getElementById('anchor-summary');
+      if (!summary) return;
+
+      const people = Array.from(document.querySelectorAll('#anchor-people .chip.active')).map(c => c.textContent.trim());
+      const activities = Array.from(document.querySelectorAll('#anchor-activities .chip.active')).map(c => c.textContent.trim());
+      const places = Array.from(document.querySelectorAll('#anchor-places .chip.active')).map(c => c.textContent.trim());
+
+      let text = '';
+      if (!people.length && !activities.length && !places.length) {
+        text = 'Choose at least one person, one activity, and one place that you can return to if thoughts get too heavy.';
+      } else {
+        text = '<strong>Your current anchors:</strong><br />';
+        if (people.length) text += 'People: ' + people.join(', ') + '<br />';
+        if (activities.length) text += 'Activities: ' + activities.join(', ') + '<br />';
+        if (places.length) text += 'Places: ' + places.join(', ');
+      }
+      summary.innerHTML = text;
+    }
+
+    setupChipGroup('anchor-people');
+    setupChipGroup('anchor-activities');
+    setupChipGroup('anchor-places');
+
+    // --- JOURNALING ---
+    const stressRange = document.getElementById('stress-range');
+    const stressValue = document.getElementById('stress-value');
+    const journalMode = document.getElementById('journal-mode');
+    const journalText = document.getElementById('journal-text');
+    const saveEntryBtn = document.getElementById('save-entry');
+    const entryList = document.getElementById('entry-list');
+    const checkGroundBtn = document.getElementById('check-ground-btn');
+    const realityCheckBtn = document.getElementById('reality-check-btn');
+    const exportJournalBtn = document.getElementById('export-journal-btn');
+
+    stressRange.addEventListener('input', () => {
+      stressValue.textContent = `${stressRange.value} / 10`;
+    });
+
+    function loadEntries() {
+      const raw = localStorage.getItem('mentalCompassJournal');
+      if (!raw) return [];
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return [];
+      }
+    }
+
+    function saveEntries(entries) {
+      localStorage.setItem('mentalCompassJournal', JSON.stringify(entries));
+    }
+
+    function renderEntries() {
+      const entries = loadEntries();
+      entryList.innerHTML = '';
+      if (!entries.length) {
+        const empty = document.createElement('div');
+        empty.className = 'small';
+        empty.textContent = 'No entries yet. Your future self will be glad you started.';
+        entryList.appendChild(empty);
+        return;
+      }
+
+      entries.slice().reverse().forEach(entry => {
+        const card = document.createElement('div');
+        card.className = 'entry-card';
+
+        const meta = document.createElement('div');
+        meta.className = 'entry-meta';
+
+        const left = document.createElement('div');
+        left.textContent = entry.time;
+
+        const right = document.createElement('div');
+        right.innerHTML = `<span class="tag">${entry.mode}</span> <span class="small">stress: ${entry.stress}/10</span>`;
+
+        meta.appendChild(left);
+        meta.appendChild(right);
+
+        const text = document.createElement('div');
+        text.className = 'entry-text';
+        text.textContent = entry.text;
+
+        card.appendChild(meta);
+        card.appendChild(text);
+
+        entryList.appendChild(card);
+      });
+    }
+
+    renderEntries();
+
+    saveEntryBtn.addEventListener('click', () => {
+      const text = journalText.value.trim();
+      if (!text) {
+        alert('Write something first, even if it’s just a single sentence about how you feel.');
+        return;
+      }
+      const entries = loadEntries();
+      const now = new Date();
+      const time = now.toLocaleString();
+
+      entries.push({
+        time,
+        mode: journalMode.value,
+        stress: stressRange.value,
+        text
+      });
+
+      saveEntries(entries);
+      renderEntries();
+      journalText.value = '';
+    });
+
+    checkGroundBtn.addEventListener('click', () => {
+      const currentStress = Number(stressRange.value);
+      let message = 'Check-in:\n\n';
+      message += '- Have I eaten, hydrated, and slept enough?\n';
+      message += '- Can I listen without making it about me?\n';
+      message += '- Do I have the energy to hold someone else’s weight right now?\n\n';
+      if (currentStress >= 7) {
+        message += 'Your stress is high (7 or more). You may need grounding or support yourself before being someone else’s anchor.';
+      } else {
+        message += 'Your stress is below 7. If your body feels steady and your mind isn’t racing, you might be able to act as a ground—check in honestly with yourself.';
+      }
+      alert(message);
+    });
+
+    realityCheckBtn.addEventListener('click', () => {
+      const text = journalText.value.trim();
+      let message = 'Reality Check Prompts:\n\n';
+      if (text) {
+        message += `You wrote:\n"${text}"\n\n`;
+      }
+      message += '- Is this a FACT, a FEAR, or a STORY I am telling myself?\n';
+      message += '- What evidence supports it?\n';
+      message += '- What evidence complicates or softens it?\n';
+      message += '- What would I tell a friend who said this?\n';
+      message += '- Is my body tired, hungry, or overloaded right now?\n';
+      alert(message);
+    });
+
+    exportJournalBtn.addEventListener('click', () => {
+      const entries = loadEntries();
+      if (!entries.length) {
+        alert('No entries to export yet.');
+        return;
+      }
+      let text = 'The Mental Compass – Journal Export\n\n';
+      entries.forEach(e => {
+        text += `Time: ${e.time}\nMode: ${e.mode}\nStress: ${e.stress}/10\nEntry:\n${e.text}\n\n---\n\n`;
+      });
+
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mental-compass-journal.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // --- SPOTIFY SEARCH ---
+    const spotifyInput = document.getElementById('spotify-input');
+    const spotifyBtn = document.getElementById('spotify-btn');
+
+    const placeholderTemplate = 'Lo-Fi Version of "insert song name"';
+
+    spotifyInput.addEventListener('focus', () => {
+      if (spotifyInput.value === placeholderTemplate) {
+        spotifyInput.value = 'Lo-Fi Version of ""';
+        // Put cursor between the quotes
+        const pos = 'Lo-Fi Version of "'.length;
+        spotifyInput.setSelectionRange(pos, pos);
+      } else {
+        // Try to place cursor inside existing quotes if they exist
+        const val = spotifyInput.value;
+        const firstQuote = val.indexOf('"');
+        const secondQuote = val.indexOf('"', firstQuote + 1);
+        if (firstQuote !== -1 && secondQuote !== -1 && secondQuote > firstQuote + 1) {
+          const pos = firstQuote + 1;
+          spotifyInput.setSelectionRange(pos, secondQuote);
+        }
+      }
+    });
+
+    spotifyBtn.addEventListener('click', () => {
+      let q = spotifyInput.value.trim();
+      if (!q || q === placeholderTemplate) {
+        alert('Type a song name inside the quotes first.');
+        return;
+      }
+      // Open Spotify search
+      const url = 'https://open.spotify.com/search/' + encodeURIComponent(q);
+      window.open(url, '_blank', 'noopener');
+    });
+  </script>
 </body>
 </html>
